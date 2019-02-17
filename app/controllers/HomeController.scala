@@ -53,8 +53,13 @@ class HomeController @Inject()(cc: ControllerComponents, streamerService: Stream
   }
 
   def resetSession() = Action {
-    sessionHistory.clear()
+    handleResetSession
     Ok("Session cleared")
+  }
+
+  //public for testing
+  def handleResetSession = {
+    sessionHistory.clear()
   }
 
   def getSessionHistory() = Action {
