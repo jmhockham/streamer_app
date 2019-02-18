@@ -1,12 +1,8 @@
 package controllers
 
-import models.PacketData
 import org.scalatest.{FlatSpec, Matchers}
 import services.StreamerService
-
 import scala.io.{Codec, Source}
-import play.api.mvc.Results.Ok
-
 import play.api.test._
 import play.api.test.Helpers._
 
@@ -19,9 +15,11 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     val controller = getController
     for(line <- sampleOne.getLines.filterNot(_.isEmpty)){
       controller.doPacketHandling(line)
-//      response shouldBe PacketData(line)
     }
     controller.sessionHistory.size shouldBe 28
+    //check an arbitrary hex
+    controller.sessionHistory.get("0x3b8384b").nonEmpty shouldBe true
+    controller.sessionHistory.get("0x3b8384b").head.pointsScored shouldBe 3
   }
 
   it should "be able to reset the session history" in {
@@ -41,9 +39,9 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     new HomeController(null, new StreamerService())
   }
 
-  it should "respond to the index Action" in new WithApplication {
-    val controller = app.injector.instanceOf[controllers.HomeController]
-    val result = controller.handlePacket("0x781002")(FakeRequest())
+  it should "respond to the handlePacket action" in new WithApplication {
+    private val controller = app.injector.instanceOf[controllers.HomeController]
+    private val result = controller.handlePacket("0x781002")(FakeRequest())
 
     status(result) shouldBe OK
     contentType(result) shouldBe Some("text/plain")
@@ -54,6 +52,13 @@ class HomeControllerSpec extends FlatSpec with Matchers {
       include("team two points 0") and
       include("elapsed time (seconds) 15")
     )
+  }
+
+  it should "throw a bad response if no hex is supplied" in new WithApplication {
+    private val controller = app.injector.instanceOf[controllers.HomeController]
+    private val result = controller.handlePacket("")(FakeRequest())
+
+    status(result) shouldBe BAD_REQUEST
   }
 
 }
