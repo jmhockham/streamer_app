@@ -5,7 +5,7 @@ import java.lang
 import models.PacketData
 import play.api.Logger
 
-class StreamerService {
+class PacketService {
 
   val packetMaxLength = 32 //indexing starts at 0
 
@@ -23,11 +23,11 @@ class StreamerService {
     }
   }
 
-  private def longToBinaryString(longTransformation: lang.Long) = {
+  def longToBinaryString(longTransformation: lang.Long) = {
     java.lang.Long.toBinaryString(longTransformation)
   }
 
-  private def hexToLong(x: String) = {
+  def hexToLong(x: String) = {
     java.lang.Long.decode(x)
   }
 

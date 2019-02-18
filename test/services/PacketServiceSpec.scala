@@ -4,9 +4,9 @@ import org.scalatest.{FlatSpec, Matchers}
 
 import scala.io.{Codec, Source}
 
-class StreamerServiceSpec extends FlatSpec with Matchers {
+class PacketServiceSpec extends FlatSpec with Matchers {
 
-  val streamerService = new StreamerService
+  val streamerService = new PacketService
 
   "parsePacket" should "correctly parse normal packets" in {
     //15s T1 +2pt 2:0

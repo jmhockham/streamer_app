@@ -1,7 +1,7 @@
 package controllers
 
 import org.scalatest.{FlatSpec, Matchers}
-import services.StreamerService
+import services.PacketService
 import scala.io.{Codec, Source}
 import play.api.test._
 import play.api.test.Helpers._
@@ -31,15 +31,19 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     controller.sessionHistory.isEmpty shouldBe true
   }
 
+  it should "handle inconsistent data" in {
+    //TODO
+  }
+
   private def getSample(filename: String) = {
     Source.fromFile(getClass.getResource(filename).getFile)
   }
 
   private def getController: HomeController = {
-    new HomeController(null, new StreamerService())
+    new HomeController(null, new PacketService())
   }
 
-  it should "respond to the handlePacket action" in new WithApplication {
+  "handlePacket" should "handle legitimate hex packets correctly" in new WithApplication {
     private val controller = app.injector.instanceOf[controllers.HomeController]
     private val result = controller.handlePacket("0x781002")(FakeRequest())
 
@@ -54,9 +58,16 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     )
   }
 
-  it should "throw a bad response if no hex is supplied" in new WithApplication {
+  it should "throw a bad response if nothing is supplied" in new WithApplication {
     private val controller = app.injector.instanceOf[controllers.HomeController]
     private val result = controller.handlePacket("")(FakeRequest())
+
+    status(result) shouldBe BAD_REQUEST
+  }
+
+  it should "throw a bad response if a non-hex value is supplied" in new WithApplication {
+    private val controller = app.injector.instanceOf[controllers.HomeController]
+    private val result = controller.handlePacket("abc123")(FakeRequest())
 
     status(result) shouldBe BAD_REQUEST
   }
