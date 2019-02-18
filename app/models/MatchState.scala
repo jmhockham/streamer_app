@@ -12,13 +12,13 @@ case class MatchState (
   lastPointScored: Int
 ) {
 
-  val dateFormat = new SimpleDateFormat("mm:ss")
-
   def report: String = {
     s"$teamOneName vs $teamTwoName: $teamOneScore-$teamTwoScore (${formatTime(elapsedTime)}; $whoJustScored, $lastPointScored)"
   }
   private def formatTime(seconds: Int) = {
-    dateFormat.format(seconds)
+    val min = seconds / 60
+    val sec = seconds % 60
+    s"$min:$sec"
   }
 
   /**
