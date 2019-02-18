@@ -52,23 +52,23 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
   }
 
   //public for testing
-  def doPacketHandling(hex: String) = {
+  def doPacketHandling(hex: String): PacketData = {
     val packetData = packetService.parsePacket(hex)
     sessionHistory.put(hex, packetData)
     packetData
   }
 
   def resetSession() = Action {
-    handleResetSession
+    handleResetSession()
     Ok("Session cleared")
   }
 
   //public for testing
-  def handleResetSession = {
+  def handleResetSession(): Unit = {
     sessionHistory.clear()
   }
 
-  def getSessionHistory() = Action {
+  def getSessionHistory = Action {
     val history = sessionHistory.toSeq.sortBy(_._2.elapsedTime).map{ case (hex, packetData) =>
       packetData.report
     }.mkString("\n")
@@ -77,7 +77,7 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
   }
 
   private def getCurrentTime: String = {
-    val now = Calendar.getInstance().getTime()
+    val now = Calendar.getInstance().getTime
     val minuteFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")
     minuteFormat.format(now)
   }

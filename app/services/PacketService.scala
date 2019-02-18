@@ -23,11 +23,11 @@ class PacketService {
     }
   }
 
-  def longToBinaryString(longTransformation: lang.Long) = {
+  def longToBinaryString(longTransformation: lang.Long): String = {
     java.lang.Long.toBinaryString(longTransformation)
   }
 
-  def hexToLong(x: String) = {
+  def hexToLong(x: String): lang.Long = {
     java.lang.Long.decode(x)
   }
 

@@ -8,7 +8,7 @@ import play.api.test.Helpers._
 
 class HomeControllerSpec extends FlatSpec with Matchers {
 
-  implicit val codec = Codec("UTF-8")
+  implicit val codec: Codec = Codec("UTF-8")
 
   "The controller" should "handle consistent data" in {
     val sampleOne = getSample("/sample_one.txt")
@@ -27,12 +27,17 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     val controller = getController
     controller.doPacketHandling(sampleOne.getLines.next())
     controller.sessionHistory.size shouldBe 1
-    controller.handleResetSession
+    controller.handleResetSession()
     controller.sessionHistory.isEmpty shouldBe true
   }
 
   it should "handle inconsistent data" in {
-    //TODO
+    val sampleOne = getSample("/sample_two.txt")
+    val controller = getController
+    for(line <- sampleOne.getLines.filterNot(_.isEmpty)){
+      controller.doPacketHandling(line)
+    }
+    controller.sessionHistory.size shouldBe 29
   }
 
   private def getSample(filename: String) = {

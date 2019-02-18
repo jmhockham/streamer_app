@@ -11,8 +11,8 @@ case class PacketData (byteString: String) {
   def pointsScored: Int = {
     pointsBits match {
       case "00" => 1
+      case "01" => 1
       case "10" => 2
-      case "01" => 2
       case "11" => 3
       case _    => 0
     }

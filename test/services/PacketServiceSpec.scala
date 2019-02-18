@@ -28,14 +28,13 @@ class PacketServiceSpec extends FlatSpec with Matchers {
     packetDataTwo.pointsScored shouldBe 3
 
     //10:10 T1 +1pt 25:20
-    //NOTE: The pdf says +1 point, but this seems to be +2?
     //"0x1310c8a1"
     val packetDataThree = streamerService.parsePacket("0x1310c8a1")
     packetDataThree.elapsedTime shouldBe 610
     packetDataThree.whoScored shouldBe "Team One"
     packetDataThree.teamOneTotal shouldBe 25
     packetDataThree.teamTwoTotal shouldBe 20
-    packetDataThree.pointsScored shouldBe 2
+    packetDataThree.pointsScored shouldBe 1
   }
 
 }
