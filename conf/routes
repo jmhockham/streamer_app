@@ -17,3 +17,4 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /packets/handlePacket/:hex  controllers.HomeController.handlePacket(hex)
 GET     /packets/history            controllers.HomeController.getSessionHistory
 GET     /packets/resetSession       controllers.HomeController.resetSession
+GET     /packets/getMatchState      controllers.HomeController.getMatchState

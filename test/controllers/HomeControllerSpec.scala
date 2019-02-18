@@ -10,7 +10,7 @@ class HomeControllerSpec extends FlatSpec with Matchers {
 
   implicit val codec: Codec = Codec("UTF-8")
 
-  "The controller" should "handle consistent data" in {
+  "session history" should "handle consistent data" in {
     val sampleOne = getSample("/sample_one.txt")
     val controller = getController
     for(line <- sampleOne.getLines.filterNot(_.isEmpty)){
@@ -22,7 +22,7 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     controller.sessionHistory.get("0x3b8384b").head.pointsScored shouldBe 3
   }
 
-  it should "be able to reset the session history" in {
+  it should "be able to be reset" in {
     val sampleOne = getSample("/sample_one.txt")
     val controller = getController
     controller.doPacketHandling(sampleOne.getLines.next())
@@ -31,7 +31,7 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     controller.sessionHistory.isEmpty shouldBe true
   }
 
-  it should "handle inconsistent data" in {
+  it should "process inconsistent data" in {
     val sampleOne = getSample("/sample_two.txt")
     val controller = getController
     for(line <- sampleOne.getLines.filterNot(_.isEmpty)){

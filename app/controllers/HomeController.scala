@@ -37,7 +37,7 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
     Ok(views.html.index("Your new application is ready."))
   }
 
-  def getMatchState = {
+  def getMatchState = Action {
     val report = if (matchState == null) "No current match" else matchState.report
     Ok(s"Current match state: \n$report")
   }
