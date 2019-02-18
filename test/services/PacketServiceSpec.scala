@@ -2,8 +2,6 @@ package services
 
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.io.{Codec, Source}
-
 class PacketServiceSpec extends FlatSpec with Matchers {
 
   val streamerService = new PacketService

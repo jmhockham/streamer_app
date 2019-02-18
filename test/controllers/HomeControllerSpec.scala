@@ -77,4 +77,25 @@ class HomeControllerSpec extends FlatSpec with Matchers {
     status(result) shouldBe BAD_REQUEST
   }
 
+  "getMatchState" should "correctly parse a packet" in new WithApplication {
+    private val controller = app.injector.instanceOf[controllers.HomeController]
+    controller.handlePacket("0xe01016")(FakeRequest())
+    private val result = controller.getMatchState(FakeRequest())
+
+    status(result) shouldBe OK
+    contentType(result) shouldBe Some("text/plain")
+    contentAsString(result) should include ("Team One vs Team Two: 2-2 (0:28; Team Two, 2)")
+  }
+
+  it should "only update if the match has progressed" in new WithApplication {
+    private val controller = app.injector.instanceOf[controllers.HomeController]
+    controller.handlePacket("0xe01016")(FakeRequest())
+    controller.handlePacket("0x1081014")(FakeRequest())
+    private val result = controller.getMatchState(FakeRequest())
+
+    status(result) shouldBe OK
+    contentType(result) shouldBe Some("text/plain")
+    contentAsString(result) should include ("Team One vs Team Two: 2-2 (0:28; Team Two, 2)")
+  }
+
 }
