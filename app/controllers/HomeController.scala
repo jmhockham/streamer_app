@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject._
 
-import models.PacketData
+import models.{MatchState, PacketData}
 import play.api.Logger
 import play.api.mvc._
 import services.PacketService
@@ -29,9 +29,17 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
 
   //this is public so that we can easily test it
   val sessionHistory: mutable.ListMap[String, PacketData] = new mutable.ListMap[String,PacketData]()
+  //we just store the match state in a var; in reality we'd handle this with a dedicated class, or
+  //a performant data storage
+  var matchState:MatchState = null;
 
   def index = Action {
     Ok(views.html.index("Your new application is ready."))
+  }
+
+  def getMatchState = {
+    val report = if (matchState == null) "No current match" else matchState.report
+    Ok(s"Current match state: \n$report")
   }
 
   def handlePacket(hex: String) = Action {
@@ -55,11 +63,13 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
   def doPacketHandling(hex: String): PacketData = {
     val packetData = packetService.parsePacket(hex)
     sessionHistory.put(hex, packetData)
+    updateCurrentMatchState(packetData)
     packetData
   }
 
   def resetSession() = Action {
     handleResetSession()
+    matchState = null
     Ok("Session cleared")
   }
 
@@ -80,6 +90,12 @@ class HomeController @Inject()(cc: ControllerComponents, packetService: PacketSe
     val now = Calendar.getInstance().getTime
     val minuteFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss")
     minuteFormat.format(now)
+  }
+
+  private def updateCurrentMatchState(packetData: PacketData): Unit = {
+    if(matchState==null || matchState.shouldUpdate(packetData)){
+      matchState = MatchState.formPacketData(packetData)
+    }
   }
 
 }
